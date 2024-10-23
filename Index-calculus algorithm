@@ -1,0 +1,52 @@
+#include <iostream>
+#include <unordered_map>
+#include <cmath>
+
+using namespace std;
+
+long long mod_pow(long long base, long long exponent, long long modulus) {
+    if (modulus == 1) return 0;
+    long long result = 1;
+    base %= modulus;
+    while (exponent > 0) {
+        if (exponent % 2 == 1)
+            result = (result * base) % modulus;
+        exponent >>= 1;
+        base = (base * base) % modulus;
+    }
+    return result;
+}
+
+long long discrete_log(long long a, long long y, long long p) {
+    long long m = (long long)sqrt(p) + 1;
+    unordered_map<long long, long long> baby_steps;
+    for (long long j = 0; j < m; ++j) {
+        long long aj = mod_pow(a, j, p);
+        baby_steps[aj] = j;
+    }
+    long long am = mod_pow(a, m * (p - 2), p);
+    long long ai = y;
+    for (long long i = 0; i < m; ++i) {
+        if (baby_steps.find(ai) != baby_steps.end()) {
+            return i * m + baby_steps[ai];
+        }
+        ai = (ai * am) % p;
+    }
+    return -1; // No solution found
+}
+
+int main() {
+    long long a, y, p;
+    cout << "Enter a, y, and p: ";
+    cin >> a >> y >> p;
+
+    long long solution = discrete_log(a, y, p);
+
+    if (solution == -1) {
+        cout << "No solution found." << endl;
+    } else {
+        cout << "Solution x = " << solution << endl;
+    }
+
+    return 0;
+}
