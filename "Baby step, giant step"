@@ -1,0 +1,64 @@
+#include <iostream>
+#include <unordered_map>
+#include <cmath>
+
+using namespace std;
+
+long long mod_inverse(long long a, long long m) {
+    long long m0 = m, t, q;
+    long long x0 = 0, x1 = 1;
+    if (m == 1)
+        return 0;
+    while (a > 1) {
+        q = a / m;
+        t = m;
+        m = a % m, a = t;
+        t = x0;
+        x0 = x1 - q * x0;
+        x1 = t;
+    }
+    if (x1 < 0)
+        x1 += m0;
+    return x1;
+}
+
+long long baby_step_giant_step(long long a, long long y, long long p) {
+    long long m = (long long)sqrt(p) + 1;
+    unordered_map<long long, long long> baby_steps;
+    long long aj = 1;
+    for (long long j = 0; j < m; ++j) {
+        baby_steps[aj] = j;
+        aj = (aj * a) % p;
+    }
+    long long a_inverse_m = 1;
+    for (long long i = 0; i < m; ++i) {
+        a_inverse_m = (a_inverse_m * a) % p;
+    }
+    a_inverse_m = mod_inverse(a_inverse_m, p);
+    long long x = -1;
+    long long ai = y;
+    for (long long i = 0; i < m; ++i) {
+        if (baby_steps.find(ai) != baby_steps.end()) {
+            x = i * m + baby_steps[ai];
+            break;
+        }
+        ai = (ai * a_inverse_m) % p;
+    }
+    return x;
+}
+
+int main() {
+    long long a, y, p;
+    cout << "Enter a, y, and p: ";
+    cin >> a >> y >> p;
+
+    long long solution = baby_step_giant_step(a, y, p);
+
+    if (solution == -1) {
+        cout << "No solution found." << endl;
+    } else {
+        cout << "Solution x = " << solution << endl;
+    }
+
+    return 0;
+}
