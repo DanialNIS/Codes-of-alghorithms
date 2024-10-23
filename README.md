@@ -1,2 +1,2 @@
 # Codes-of-alghorithms
-Codes for cryptographic algorithms(Project Daryn 2024)
+Коды криптографических логарифмов (Проект Жилкибаев Даниал 10G 2024-2025)
